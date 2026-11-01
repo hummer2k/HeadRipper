@@ -21,74 +21,8 @@ sleepcasts_all = true
 name = "Akzeptanz"
 
 [[items]]
-name = "Mit Ablenkungen umgehen"
-
-[[items]]
-name = "Mit Reue umgehen"
-
-[[items]]
-name = "Umgang mit Angst"
-
-[[items]]
-name = "Stress loslassen"
-
-[[items]]
-name = "Geduld"
-
-[[items]]
-name = "Prioritäten setzen"
-
-[[items]]
-name = "Produktivität"
-
-[[items]]
-name = "Schlaf"
-
-[[items]]
-name = "Konzentration"
-
-[[items]]
-name = "Wut verwandeln"
-
-[[items]]
-name = "Geschäftsreisen"
-
-[[items]]
-name = "Nach der Arbeit entspannen"
-
-[[items]]
-name = "Feierabend"
-
-[[items]]
-name = "Hausarbeit"
-
-[[items]]
-name = "Leben als Tetrisspiel"
-
-[[items]]
-name = "Konfliktbewältigung"
-
-[[items]]
-name = "Aufwachen"
-
-[[items]]
-name = "Starte gelassen in den Tag"
-
-[[items]]
-name = "Schwierige Gespräche"
-
-[[items]]
-name = "Mit Veränderungen umgehen"
-
-[[items]]
 name = "Rasende Gedanken"
 group_id = 904
-
-[[items]]
-name = "Wieder in den Schlaf finden"
-
-[[items]]
-name = "Körper und Geist vor dem Schlafen beruhigen"
 
 # English-only content from the original list: report, do not download.
 [[items]]
