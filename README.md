@@ -16,6 +16,9 @@ Add a download button directly inside Headspace’s site to grab whatever audio 
 **Python Scripts**
 Automate catalog building and batch downloads from the command line. Perfect for pulling whole categories in one go.
 
+**Headspace Manager**
+One CLI for the full pipeline: resolve names, download, tag, organize into a Jellyfin-ready library, fetch album art and sync to a mounted path.
+
 **Sleepcast Support (NEW)**
 Full integration with Headspace’s newer v3 API.
 Download the **Mixed track** (default) or grab all three:
@@ -215,7 +218,146 @@ Large Sleepcast files (≈50MB each) show a progress bar while downloading.
 
 ---
 
+### Headspace Manager (Jellyfin)
+
+`headspace_manager.py` is a single CLI for the whole pipeline:
+
+* resolve item names against the Headspace catalog
+* download the selected audio
+* write ID3v2.4 tags
+* organize everything into a Jellyfin-ready `Artist/Album/Track` layout
+* fetch and crop album art
+* mirror the result to a mounted path
+
+It uses the token from `Saved/BearerID.env` at the repo root. It does not log in by itself.
+
+#### Setup
+
+Install the Python dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Optional tools:
+
+* `magick` (ImageMagick) and `pdftoppm` (poppler) for album art
+* `rsync` for `sync`
+
+#### Configuration
+
+Edit `headspace.toml`:
+
+```toml
+root = "/home/user/Musik/Headspace"
+cache = "Saved/Audio"
+language = "de"
+narrator = "Suzanne"
+durations = [10, 15, 20]
+sleepcasts_all = true
+
+[[items]]
+name = "Akzeptanz"
+
+[[items]]
+name = "Rasende Gedanken"
+group_id = 904
+
+[[items]]
+name = "Arbeitsweg"
+english_name = "Mindful Commute"
+english_fallback = false
+```
+
+| Key | Meaning |
+|---|---|
+| `root` | Jellyfin library root |
+| `cache` | download staging directory |
+| `language` | `de` or `en` |
+| `narrator` | preferred narrator; empty string disables the filter |
+| `durations` | preferred lengths in minutes |
+| `sleepcasts_all` | download all current Sleepcasts (MIXED track) |
+| `group_id` | explicit Headspace activity group for items not present in the library tiles |
+| `english_name` / `english_fallback` | report English-only items, or download them when set to `true` |
+
+#### Commands
+
+| Command | Purpose |
+|---|---|
+| `resolve` | Map names to Headspace items and report missing or English-only entries |
+| `download` | Download the selected audio into the cache |
+| `build` | Tag and copy the cache into the library layout |
+| `covers` | Fetch and crop missing `cover.jpg` files |
+| `all` | `resolve` + `download` + `build` + `covers` |
+| `sync` | Mirror the library to a mounted path |
+
+Run all commands from the repo root:
+
+```bash
+python headspace_manager.py resolve
+python headspace_manager.py download --dry-run
+python headspace_manager.py download
+python headspace_manager.py build
+python headspace_manager.py covers
+python headspace_manager.py all
+python headspace_manager.py sync --target /mnt/jellyfin/Headspace --dry-run
+```
+
+Options:
+
+* `--name "Akzeptanz"`: use only this name instead of the config list; repeatable
+* `--skip-sleepcasts`: meditations only
+* `--dry-run`: plan only, no writes
+* `--move`: move from the cache instead of copying
+* `--root` / `--cache`: override the paths from the config
+* `--log PATH`: write a log file
+* `sync --no-delete`: keep extra files on the target
+
+#### Layout and tags
+
+```
+~/Musik/Headspace/
+├── Meditation/
+│   └── Suzanne/
+│       ├── Akzeptanz (10 min)/
+│       │   ├── 01 - Übung 1.mp3
+│       │   └── ...
+│       └── Stress loslassen (20 min)/
+│           ├── CD1 - Stufe 1/
+│           │   ├── 01 - Übung 1 von Stufe 1.mp3
+│           │   └── ...
+│           ├── CD2 - Stufe 2/
+│           └── CD3 - Stufe 3/
+└── Sleepcasts/
+    └── Headspace/
+        └── Historic Hacienda/
+            ├── 01 - Historic Hacienda (45 min).mp3
+            └── cover.jpg
+```
+
+Each file gets ID3v2.4 tags: `Title`, `Artist`, `Album Artist`, `Album`, `Track`, `Disc`, `Genre`, `Year`, `Comment`, and the Headspace media ID. Multi-level courses use one disc per level.
+
+In Jellyfin, create a Music library for `Meditation` and one for `Sleepcasts`, or point a single Music library at the root. The `Meditation` and `Sleepcast` genre tags can be used as filters.
+
+#### Notes
+
+* `build` copies by default. Use `--move` to move the files out of the cache.
+* The manager reads the token from `Saved/BearerID.env` at the repo root. If you created the token from inside `PythonScript/`, copy `PythonScript/Saved/BearerID.env` to `Saved/BearerID.env` once. If requests return `401 Unauthorized`, refresh the token from the `Authorization` header of a request to `api.prod.headspace.com`.
+* `download` skips files that already exist in the cache; `build` skips files that already exist in the library. Re-runs are safe.
+
+---
+
 ## Automation Workflow
+
+### Headspace Manager
+
+1. **Refresh login** when the token expires
+2. **Edit `headspace.toml`** with the items you want
+3. **Resolve** with `python headspace_manager.py resolve`
+4. **Build everything** with `python headspace_manager.py all`
+5. **Sync** with `python headspace_manager.py sync --target /mnt/jellyfin/Headspace`
+
+### Legacy scripts
 
 1. **Refresh login** – run `Browser_Login.py` once daily
 2. **Update catalogs** – run `Headripper.py` for your locations
