@@ -4,3 +4,4 @@ python-dotenv
 keyring
 colorama
 tqdm
+mutagen
