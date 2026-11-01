@@ -1,0 +1,102 @@
+# Headspace Manager configuration
+#
+# root          Jellyfin library root (Category/Artist/Album/...)
+# cache         download staging area
+# language      de or en
+# narrator      preferred narrator, empty string disables the filter
+# durations     preferred session lengths in minutes
+# sleepcasts_all  download all current Sleepcasts as MIXED tracks
+
+root = "~/Musik/Headspace"
+cache = "Saved/Audio"
+language = "de"
+narrator = "Suzanne"
+durations = [10, 15, 20]
+sleepcasts_all = true
+
+# sleepcasts_date = "2026-11-01"
+# sync_target = "/mnt/jellyfin/Headspace"
+
+[[items]]
+name = "Akzeptanz"
+
+[[items]]
+name = "Mit Ablenkungen umgehen"
+
+[[items]]
+name = "Mit Reue umgehen"
+
+[[items]]
+name = "Umgang mit Angst"
+
+[[items]]
+name = "Stress loslassen"
+
+[[items]]
+name = "Geduld"
+
+[[items]]
+name = "Prioritäten setzen"
+
+[[items]]
+name = "Produktivität"
+
+[[items]]
+name = "Schlaf"
+
+[[items]]
+name = "Konzentration"
+
+[[items]]
+name = "Wut verwandeln"
+
+[[items]]
+name = "Geschäftsreisen"
+
+[[items]]
+name = "Nach der Arbeit entspannen"
+
+[[items]]
+name = "Feierabend"
+
+[[items]]
+name = "Hausarbeit"
+
+[[items]]
+name = "Leben als Tetrisspiel"
+
+[[items]]
+name = "Konfliktbewältigung"
+
+[[items]]
+name = "Aufwachen"
+
+[[items]]
+name = "Starte gelassen in den Tag"
+
+[[items]]
+name = "Schwierige Gespräche"
+
+[[items]]
+name = "Mit Veränderungen umgehen"
+
+[[items]]
+name = "Rasende Gedanken"
+group_id = 904
+
+[[items]]
+name = "Wieder in den Schlaf finden"
+
+[[items]]
+name = "Körper und Geist vor dem Schlafen beruhigen"
+
+# English-only content from the original list: report, do not download.
+[[items]]
+name = "Arbeitsweg"
+english_name = "Mindful Commute"
+english_fallback = false
+
+[[items]]
+name = "Gehen: in der Stadt"
+english_name = "Walking into Presence"
+english_fallback = false
